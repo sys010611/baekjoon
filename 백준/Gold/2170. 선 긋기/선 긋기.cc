@@ -3,6 +3,7 @@
 #include <vector>
 using namespace std;
 
+pair<int,int> curr = pair<int,int>(-2000000000, -2000000000);
 vector<pair<int,int>> v;
 
 int result = 0;
@@ -25,9 +26,7 @@ int main()
 
 	sort(v.begin(), v.end());
 
-	pair<int, int> curr = make_pair(v[0].first, v[0].second);
-
-	for (auto it = v.begin()+1; it != v.end(); it++)
+	for (auto it = v.begin(); it != v.end(); it++)
 	{
 		int x = it->first;
 		int y = it->second;
