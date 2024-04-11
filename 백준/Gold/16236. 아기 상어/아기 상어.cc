@@ -152,18 +152,11 @@ int main()
 			}
 		}
 
-	int count = 0;
 	while (currRow != -1 && currCol != -1)
 	{
-		//PrintBoard();
-
 		P result = BFS(currRow, currCol);
 		currRow = result.first;
 		currCol = result.second;
-
-		/*count ++;
-		if(count == 3)
-			break;*/
 	}
 
 	cout << currTime;
