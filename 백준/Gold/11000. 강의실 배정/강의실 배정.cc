@@ -33,7 +33,7 @@ int main()
 	priority_queue<int, vector<int>, greater<int>> finishingTimes;
 	finishingTimes.push(0);
 
-	int result = 0;
+	int result = 1;
 	for (auto item : classes)
 	{
 		int minFinishingTime = finishingTimes.top(); 
@@ -49,5 +49,5 @@ int main()
 		}
 	}
 
-	cout << finishingTimes.size();
+	cout << result;
 }
