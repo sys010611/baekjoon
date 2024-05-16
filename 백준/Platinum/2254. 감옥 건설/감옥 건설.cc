@@ -84,28 +84,24 @@ signed main()
 		cin >> x >> y;
 		points.push_back(Point(x, y));
 	}
-	sort(points.begin(), points.end());
 
-	
+	sort(points.begin(), points.end()); // x,y값으로 정렬, 0번 점이 기준점이 됨
 
 	int count = 0;
 	while (points.size() > 2) // 담을 만드려면 점이 최소 3개
 	{
-
 		for (int i = 1; i < points.size(); i++)
 		{
 			points[i].p = points[i].x - points[0].x;
 			points[i].q = points[i].y - points[0].y;
 		}
 
-		sort(points.begin() + 1, points.end());
+		sort(points.begin() + 1, points.end()); // 0번점 기준 반시계방향 정렬
 
-		//cout << "현재 가지고 있는 점 : "<< points.size() << endl;
 		//담 하나 만들기
 		stack<Point> S;
 		S.push(points[0]);
 		S.push(points[1]);
-		//cout << "시작점 2개 배치" << endl;
 
 		for (int i = 2; i < points.size(); i++)
 		{
@@ -132,40 +128,32 @@ signed main()
 		int columnCount = S.size();
 
 		// 담 생성 완료, 그 담이 P를 포함하는지 검사
-		//cout << "담을 이루는 점 : " << endl;
 		bool including = true;
 		Point first = S.top();
-		//cout << first.x << " " << first.y << endl;
 		auto it = remove(points.begin(), points.end(), first);
 		points.resize(it - points.begin());
-
 
 		S.pop();
 		Point second = S.top();
 		int stdDir = CCW(second, first, P);
-		//cout << "기준 방향 : " << stdDir << endl;
 
 		while (S.size() >= 2)
 		{
 			// 점 2개씩 뽑아가면서 계속 P와 CCW 수행, 방향이 계속 일치해야 함
 			Point first = S.top(); S.pop();
-			//cout << first.x << " " << first.y << endl;
 			auto it = remove(points.begin(), points.end(), first);
 			points.resize(it - points.begin());
 
 			Point second = S.top();
 			int dir = CCW(second, first, P);
-			//cout << "이번 방향 : " << dir << endl;
 
 			if (dir != stdDir || dir == 0)
 			{
 				including = false;
-				//cout << "담이 P를 포함 못함 " << endl;
 				break;
 			}
 		}
 
-		//cout << S.top().x << " " << S.top().y << endl;
 		it = remove(points.begin(), points.end(), S.top());
 		points.resize(it - points.begin());
 
