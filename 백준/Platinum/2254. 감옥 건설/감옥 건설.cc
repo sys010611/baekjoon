@@ -84,13 +84,13 @@ signed main()
 		cin >> x >> y;
 		points.push_back(Point(x, y));
 	}
+	sort(points.begin(), points.end());
 
 	
 
 	int count = 0;
 	while (points.size() > 2) // 담을 만드려면 점이 최소 3개
 	{
-		sort(points.begin(), points.end());
 
 		for (int i = 1; i < points.size(); i++)
 		{
