@@ -6,8 +6,6 @@
 #include <cmath>
 using namespace std;
 
-const int INVALID = -100000000;
-
 struct Point
 {
 	int x,y, p, q;
@@ -15,27 +13,27 @@ struct Point
 	{
 		this->x = x;
 		this->y = y;
-		p = 1;
-		q = 0;
-	}
-
-	bool operator<(const Point& ref)
-	{
-		//p, q가 정해졌을 경우
-		if(p*ref.q != q*ref.p)
-			return p*ref.q - q*ref.p>0;
-
-		// p,q가 아직 안정해졌다면 첫번째 점이 왼쪽 아래에 오도록
-		if (y != ref.y)
-		{
-			return y < ref.y;
-		}
-		else
-		{
-			return x < ref.x;
-		}
+		p = -1;
+		q = -1;
 	}
 };
+
+bool cmp1(Point& a, Point& b)
+{
+	// p,q가 아직 안 정해진 경우
+	if (a.y != b.y)
+		return a.y < b.y;
+	
+	return a.x < b.x;
+}
+bool cmp2(Point& a, Point& b)
+{
+	//p, q가 정해졌을 경우
+	if(a.p * b.q - a.q * b.p != 0)
+		return a.p * b.q - a.q * b.p > 0;
+
+	return cmp1(a, b);
+}
 
 struct Vector
 {
@@ -128,7 +126,7 @@ double GetArea(vector<int>& resultVec)
 	return -result;
 }
 
-signed main()
+int main()
 {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -150,7 +148,7 @@ signed main()
 	}
 
 	//x, y기준 정렬
-	sort(points.begin(), points.end());
+	sort(points.begin(), points.end(), cmp1);
 
 	points[0].p = 0; points[0].q = 0;
 	for (int i = 1; i < points.size(); i++)
@@ -162,7 +160,7 @@ signed main()
 	//PrintPoints();
 
 	//p, q 이용, 반시계방향으로 정렬
-	sort(points.begin()+1, points.end());
+	sort(points.begin()+1, points.end(), cmp2);
 
 	//PrintPoints();
 
@@ -186,5 +184,5 @@ signed main()
 
 	//cout << "면적 : " <<  area << endl;
 
-	cout << (int)area / 50;
+	cout << (int)(area / 50);
 }
