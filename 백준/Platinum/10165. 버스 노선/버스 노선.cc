@@ -5,6 +5,8 @@
 #include <set>
 using namespace std;
 
+#define int long long
+
 struct line
 {
 	int start, end, number;
@@ -29,7 +31,7 @@ bool compare(line a, line b)
 	return a.start < b.start;
 }
 
-int main()
+signed main()
 {
 	cin >> N;
 	cin >> M;
