@@ -3,7 +3,6 @@
 #include <stack>
 using namespace std;
 
-#define int long long
 
 int N;
 int heights[100000];
