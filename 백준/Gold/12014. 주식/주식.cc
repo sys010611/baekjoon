@@ -25,17 +25,23 @@ int main()
 		LIS.resize(n);
 		fill(LIS.begin(), LIS.end(), 0);
 		
+		vector<int> N; // 길이가 idx인 수열의 마지막에 올수 있는 최솟값
+		N.resize(10001);
+		fill(N.begin(), N.end(), 1000000000);
+		N[0] = 0;
 		for (int i = 0; i < n; i++)
 		{
-			int prev = 0; // 이전 날까지 중 LIS의 길이
-			for (int j = 0; j < i; j++)
-			{
-				if (arr[j] < arr[i])
-				{
-					prev = max(prev, LIS[j]);
-				}
-			}
-			LIS[i] = prev + 1;
+			int currNum = arr[i];
+			int prevLength = 0; // 이전 날들의 LIS의 길이 중 최대
+
+			// 이분탐색
+			auto it = lower_bound(N.begin(), N.end(), currNum) - 1; // 내가 붙을 수 있는 최대 길이 찾기
+			prevLength = it - N.begin();
+
+			LIS[i] = prevLength + 1;
+
+			// N 업데이트
+			N[LIS[i]] = min(currNum, N[LIS[i]]);
 		}
 
 		cout << "Case #" << test << endl;
@@ -43,5 +49,10 @@ int main()
 			cout << 1 << endl;
 		else
 			cout << 0 << endl;
+
+
+		//cout << "Lis: " << endl;
+		//for(int i=0;i<n;i++)
+		//	printf("%d : %d\n", i, LIS[i]);
 	}
 }
