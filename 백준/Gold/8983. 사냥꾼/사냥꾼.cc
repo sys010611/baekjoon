@@ -34,7 +34,7 @@ signed main()
 		cin >> animals[i].first >> animals[i].second;
 	}
 
-	// 각 동물마다 사로에서의 거리 구하기
+	// 각 동물까지의 거리 구하기
 	for (int i=0;i<animals.size();i++)
 	{
 		auto& animal = animals[i];
@@ -45,11 +45,9 @@ signed main()
 		// x거리는 이분탐색으로 구하기
 		auto lb = lower_bound(shootPos.begin(), shootPos.end(), animal.first);
 		if(lb == shootPos.begin())
-			dist += *lb - animal.first;
+			dist += abs(*lb - animal.first);
 		else if (lb == shootPos.end())
-		{
-			dist += *(shootPos.end()-1) - animal.first;
-		}
+			dist += abs(*(shootPos.end() - 1) - animal.first);
 		else
 		{
 			int xDist1 = *lb - animal.first;
