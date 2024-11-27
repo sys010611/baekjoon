@@ -8,15 +8,11 @@ using namespace std;
 typedef pair<int,int> P;
 const int INF = INT_MAX;
 
-bool visited[501];
-
 signed main()
 {
 	int t; cin >> t;
 	while (t--)
 	{
-		memset(visited, 0, sizeof(visited));
-
 		int N, M, W;
 		cin >> N >> M >> W;
 
@@ -44,11 +40,10 @@ signed main()
 
 		for (int startNode = 1; startNode <= N; startNode++)
 		{
-			if(visited[startNode])
+			if(dist[startNode] != INF)
 				continue;
 
 			dist[startNode] = 0; 
-			visited[startNode] = true;
 
 			for (int i = 0; i < N; i++)
 			{
@@ -68,7 +63,6 @@ signed main()
 									minusCycleFound = true;
 								}
 								dist[nodeNo] = dist[curr] + cost;
-								visited[nodeNo] = true;
 								//cout << nodeNo << " dist update : " << dist[nodeNo] << endl;
 							}
 						}
