@@ -69,7 +69,24 @@ void Test()
 		DFS(i);
 	}
 
+	if (aScore == 0 || bScore == 0)
+		return;
+
 	result = min(result, abs(aScore - bScore));
+}
+
+void Backtrack(int idx)
+{
+	if (idx >= N)
+	{
+		Test();
+		return;
+	}
+
+	region[idx] = 1;
+	Backtrack(idx + 1);
+	region[idx] = 0;
+	Backtrack(idx + 1);
 }
 
 int main()
@@ -80,6 +97,7 @@ int main()
 	cin >> N;
 	adjList.resize(N);
 	visited.resize(N);
+	region.resize(N);
 
 	for (int i = 0; i < N; i++)
 	{
@@ -97,24 +115,7 @@ int main()
 		}
 	}
 
-	for (int i = 1; i <= N - 1; i++)
-	{
-		region.clear();
-		for (int j = 0; j < N - i; j++)
-		{
-			region.push_back(0);
-		}
-		for (int j = 0; j < i; j++)
-		{
-			region.push_back(1);
-		}
-
-		do
-		{
-			Test();
-		}
-		while (next_permutation(region.begin(), region.end()));
-	}
+	Backtrack(0);
 
 	if (result == INT_MAX)
 		cout << -1;
