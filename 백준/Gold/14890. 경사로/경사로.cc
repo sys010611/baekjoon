@@ -26,31 +26,24 @@ bool CheckLine(vector<int>& line)
 				if (startIdx < 0)
 					return false;
 
-				int start = line[startIdx];
-				if (start == curr)
+				// 배치해보기
+				for (int j = startIdx; j <= i; j++)
 				{
-					// 배치해보기
-					for (int j = startIdx; j <= i; j++)
-					{
-						if (line[j] != curr)
-							return false;
+					if (line[j] != curr)
+						return false;
 
-						if (placed[j])
-							return false;
+					if (placed[j])
+						return false;
 
-						placed[j] = true;
-					}
+					placed[j] = true;
 				}
-				else
-					return false;
 			}
 			else if (curr - 1 == next)
 			{
 				int endIdx = i + L;
+
 				if (endIdx >= N)
 					return false;
-
-				int end = line[endIdx];
 
 				// 배치해보기
 				for (int j = i + 1; j <= endIdx; j++)
