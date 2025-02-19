@@ -9,18 +9,18 @@ using namespace std;
 #define INF 1000000
 
 int N, M;
-bool canUse[101];
+bool canUse[106];
 int ret = 0;
-int dp[101][202]; // [현재 일자][쿠폰 개수]
+int dp[106][202]; // [현재 일자][쿠폰 개수]
 
 signed main()
 {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	fill(canUse, canUse + 101, true);
+	fill(canUse, canUse + 106, true);
 	
-	for (int i = 0; i < 101; i++)
+	for (int i = 0; i < 106; i++)
 		for (int j = 0; j < 202; j++)
 			dp[i][j] = INF;
 
@@ -55,8 +55,6 @@ signed main()
 				if (j >= 3)
 					dp[i + 1][j - 3] = min(dp[i + 1][j - 3], dp[i][j]);
 			}
-
-			
 
 			// 3일권
 			dp[i + 3][j + 1] = min(dp[i + 3][j + 1], dp[i][j] + 25000);
