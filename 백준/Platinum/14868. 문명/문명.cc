@@ -1,120 +1,99 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
 #include <queue>
-#include <list>
-#include <cstring>
+#include <vector>
+#include <tuple>
 using namespace std;
 
-int dx[] = { 1,0,-1,0 };
-int dy[] = { 0,1,0,-1 };
-
+const int MAX = 2001;
 int N, K;
-int map[2000][2000];
-int p[4000001]; // 각 문명의 부모 정보.
-queue<pair<int, int>> unionQ;
-queue<pair<int, int>> bfsQ;
+int parent[MAX * MAX]; // DSU
+int board[MAX][MAX];   // 문명 ID 저장
+int dx[4] = {0, 0, 1, -1};
+int dy[4] = {1, -1, 0, 0};
 
-int find(int n)
-{
-	if (p[n] == -1)
-		return n;
-	else
-		return p[n] = find(p[n]);
+int find(int x) {
+    if (parent[x] == x) return x;
+    return parent[x] = find(parent[x]);
 }
 
-void Merge(int a, int b)
-{
-	int rootA = find(a);
-	int rootB = find(b);
-
-	p[rootB] = rootA;
+bool merge(int a, int b) {
+    a = find(a); b = find(b);
+    if (a == b) return false;
+    parent[b] = a;
+    return true;
 }
 
-void MergeAll()
-{
-	while (!unionQ.empty())
-	{
-		int currX = unionQ.front().first;
-		int currY = unionQ.front().second;
-
-		bfsQ.push(unionQ.front());
-		unionQ.pop();
-
-		for (int i = 0; i < 4; i++)
-		{
-			int nextX = currX + dx[i];
-			int nextY = currY + dy[i];
-
-			//범위 밖이거나, 인접 칸이 문명이 아니었을 경우 그냥 빠져나오기
-			if (nextX < 0 || nextX >= N || nextY < 0 || nextY >= N || map[nextX][nextY] == 0)
-				continue;
-
-			int civilA = map[currX][currY];
-			int civilB = map[nextX][nextY];
-
-			if (find(civilA) != find(civilB))
-			{
-				Merge(civilA, civilB);
-				K--;
-			}
-		}
-	}
+int idx(int x, int y) {
+    return (x - 1) * N + y; // 고유 번호로 변환
 }
 
-void BFS()
-{
-	while (!bfsQ.empty())
-	{
-		int currX = bfsQ.front().first;
-		int currY = bfsQ.front().second;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-		bfsQ.pop();
+    cin >> N >> K;
+    queue<pair<int, int>> q;
+    queue<tuple<int, int, int>> nxt; // (x, y, 문명id)
 
-		for (int i = 0; i < 4; i++)
-		{
-			int nextX = currX + dx[i];
-			int nextY = currY + dy[i];
+    int total_unions = K;
+    for (int i = 1; i <= K; ++i) {
+        int x, y;
+        cin >> x >> y;
+        board[x][y] = i;
+        q.push({x, y});
+        parent[i] = i;
+    }
 
-			//범위 밖이거나, 인접 칸이 문명이었을 경우 그냥 빠져나오기
-			if (nextX < 0 || nextX >= N || nextY < 0 || nextY >= N || map[nextX][nextY] != 0)
-				continue;
+    // 초기 인접 문명 결합
+    queue<pair<int, int>> temp = q;
+    while (!temp.empty()) {
+        auto [x, y] = temp.front(); temp.pop();
+        int civ = board[x][y];
+        for (int dir = 0; dir < 4; ++dir) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            if (nx < 1 || ny < 1 || nx > N || ny > N) continue;
+            if (board[nx][ny]) {
+                if (merge(civ, board[nx][ny])) total_unions--;
+            }
+        }
+    }
 
-			map[nextX][nextY] = map[currX][currY];
-			unionQ.push({ nextX, nextY });
-		}
-	}
-}
+    int year = 0;
+    while (total_unions > 1) {
+        // 확산 단계
+        int sz = q.size();
+        while (sz--) {
+            auto [x, y] = q.front(); q.pop();
+            int civ = board[x][y];
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                if (nx < 1 || ny < 1 || nx > N || ny > N) continue;
+                if (board[nx][ny] == 0) {
+                    board[nx][ny] = civ;
+                    nxt.push({nx, ny, civ});
+                }
+            }
+        }
 
-int main()
-{
-	cin >> N >> K;
+        // 결합 단계
+        while (!nxt.empty()) {
+            auto [x, y, civ] = nxt.front(); nxt.pop();
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                if (nx < 1 || ny < 1 || nx > N || ny > N) continue;
+                if (board[nx][ny] && board[nx][ny] != civ) {
+                    if (merge(board[nx][ny], civ)) total_unions--;
+                }
+            }
+            q.push({x, y});
+        }
 
-	fill(p, p + 4000001, -1);
+        year++;
+    }
 
-	int civilNo = 1;
-	for (int i = 0; i < K; i++)
-	{
-		int x, y;
-		cin >> x >> y;
-		x--; y--;
-		map[x][y] = civilNo++;
-		unionQ.push({ x,y });
-	}
-
-	MergeAll();
-	int result = 0;
-	while (true)
-	{
-		if (K == 1)
-		{
-			cout << result;
-			return 0;
-		}
-
-		BFS();
-		MergeAll();
-
-		result++;
-	}
+    cout << year << '\n';
+    return 0;
 }
